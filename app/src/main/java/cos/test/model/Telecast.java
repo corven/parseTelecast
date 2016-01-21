@@ -1,4 +1,4 @@
-package cos.test;
+package cos.test.model;
 
 public class Telecast {
     private String name;

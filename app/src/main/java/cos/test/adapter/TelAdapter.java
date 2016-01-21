@@ -1,4 +1,4 @@
-package cos.test;
+package cos.test.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,6 +10,9 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import cos.test.R;
+import cos.test.model.Telecast;
 
 public class TelAdapter extends ArrayAdapter<Telecast> {
 

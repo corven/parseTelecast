@@ -1,5 +1,6 @@
-package cos.test;
+package cos.test.activity;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,41 +13,50 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+import cos.test.R;
+import cos.test.adapter.TelAdapter;
+import cos.test.model.Telecast;
 
-    private ListView lv;
-    public ArrayList<Telecast> telList = new ArrayList<>();
-    public TelAdapter telAdapter;
+public class TelecastActivity extends AppCompatActivity {
+
+    private ListView lvTel;
+    public ArrayList<Telecast> telecasts = new ArrayList<>();
+    public TelAdapter adapter;
+    final String NUMBER = "number";
+    int number;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        lv = (ListView) findViewById(R.id.list);
-        new NewThread().execute();
-        telAdapter = new TelAdapter(MainActivity.this, telList);
+        setContentView(R.layout.activity_telecast);
+
+        Intent intent = getIntent();
+        number = intent.getIntExtra(NUMBER, 0);
+
+        lvTel = (ListView) findViewById(R.id.listTel);
+        new TelThread().execute();
+        adapter = new TelAdapter(TelecastActivity.this, telecasts);
     }
 
-    public class NewThread extends AsyncTask<String, Void, String> {
+    public class TelThread extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... arg) {
 
             Document doc;
             try {
-                doc = Jsoup.connect("http://tv.cmlt.tv/program?channel=133&time=0").get();
+                doc = Jsoup.connect("http://tv.cmlt.tv/program?channel=" + number + "&time=0").get();
 
                 Elements names = doc.select(".program_name");
                 Elements times = doc.select(".program_time");
 
-                telList.clear();
+                telecasts.clear();
 
                 for (int i = 0; i < names.size(); i++) {
                     String time = times.get(i).text();
                     String name = names.get(i).text();
                     Telecast tel = new Telecast(name, time);
-                    telList.add(tel);
+                    telecasts.add(tel);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -57,7 +67,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            lv.setAdapter(telAdapter);
+            lvTel.setAdapter(adapter);
         }
     }
+
 }
