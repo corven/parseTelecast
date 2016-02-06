@@ -3,15 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".fragment.FragmentFavorites">
 
-    <ListView
-        android:id="@+id/listTel"
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvTel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@color/green_light"
-        android:dividerHeight="1dp">
-    </ListView>
+        android:scrollbars="vertical"
+
+        >
+    </android.support.v7.widget.RecyclerView>
 
 </FrameLayout>
 

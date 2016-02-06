@@ -1,84 +1,53 @@
 package cos.test.adapter;
 
-import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import cos.test.R;
 import cos.test.model.Telecast;
 
-public class TelAdapter extends ArrayAdapter<Telecast> {
+public class TelAdapter extends RecyclerView.Adapter<TelAdapter.ViewHolder> {
 
     private List<Telecast> telList;
 
-    public TelAdapter(Context context, List<Telecast> telList) {
-        super(context, R.layout.tel_item, telList);
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        public View view;
+        TextView tvTime, tvName;
+
+        public ViewHolder(View v) {
+            super(v);
+            tvTime = (TextView) v.findViewById(R.id.tvTime);
+            tvName = (TextView) v.findViewById(R.id.tvName);
+        }
+    }
+
+    public TelAdapter(List<Telecast> telList) {
         this.telList = telList;
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup parent) {
-        if (view == null) {
-            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.tel_item, parent, false);
-        }
-
-
-        Telecast telecast = telList.get(position);
-
-        TextView time = (TextView)view.findViewById(R.id.tvTime);
-        TextView name = (TextView)view.findViewById(R.id.tvName);
-
-        int currentTelcast = getCurrentTelecast();
-
-        // currentTelcast - 1 делаем для того, что бы текущая программа не закрашивалась
-        if (position < currentTelcast - 1) {
-            view.setBackgroundResource(R.color.green_light);
-        }else {
-            view.setBackgroundResource(R.color.white);
-        }
-        time.setText(telecast.getTime());
-        name.setText(telecast.getName());
-
-        return view;
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.tel_item, parent, false);
+        return new ViewHolder(v);
     }
 
-    /**
-     * Метод возвращает номер текущей передачи в telList
-     * @return currentTelcast
-     */
-    private int getCurrentTelecast() {
-        // Получение текущего времени. HH - часы, MM - минуты
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm");
-        Date date = new Date();
-        String currentTime = format.format(date);
-        String[] sCurrTime = currentTime.split(":");
-        int currTimeHH = Integer.parseInt(sCurrTime[0]);
-        int currTimeMM = Integer.parseInt(sCurrTime[1]);
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        Telecast telecast = telList.get(position);
 
-        int currentTelcast = 0;
-        boolean flag = true;
+        holder.tvTime.setText(telecast.getTime());
+        holder.tvName.setText(telecast.getName());
+    }
 
-        while (flag) {
-            // Время в telList. HH - часы, MM - минуты
-            String time = telList.get(currentTelcast).getTime();
-            String[] sTime = time.split("\\.");
-            int timeHH = Integer.parseInt(sTime[0]);
-            int timeMM = Integer.parseInt(sTime[1]);
-
-            if ((currTimeHH < timeHH) || ((currTimeHH == timeHH) && (currTimeMM < timeMM))) {
-                flag = false;
-                continue;
-            }
-            currentTelcast ++;
-        }
-        return currentTelcast;
+    @Override
+    public int getItemCount() {
+        return telList.size();
     }
 }

@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ListView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -19,9 +22,10 @@ import cos.test.model.Telecast;
 
 public class TelecastActivity extends AppCompatActivity {
 
-    private ListView lvTel;
+    private RecyclerView rvTel;
+    private RecyclerView.LayoutManager layoutManager;
+    private RecyclerView.Adapter adapter;
     public ArrayList<Telecast> telecasts = new ArrayList<>();
-    public TelAdapter adapter;
     final String NUMBER = "number";
     int number;
 
@@ -30,12 +34,26 @@ public class TelecastActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_telecast);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tbMain);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         Intent intent = getIntent();
         number = intent.getIntExtra(NUMBER, 0);
 
-        lvTel = (ListView) findViewById(R.id.listTel);
+        rvTel = (RecyclerView)findViewById(R.id.rvTel);
+        rvTel.setHasFixedSize(true);
+
+        layoutManager = new LinearLayoutManager(this);
+        rvTel.setLayoutManager(layoutManager);
         new TelThread().execute();
-        adapter = new TelAdapter(TelecastActivity.this, telecasts);
+        adapter = new TelAdapter(telecasts);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     public class TelThread extends AsyncTask<String, Void, String> {
@@ -67,8 +85,16 @@ public class TelecastActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            lvTel.setAdapter(adapter);
+            rvTel.setAdapter(adapter);
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }
