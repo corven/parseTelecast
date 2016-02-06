@@ -26,21 +26,25 @@ public class TelecastActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView.Adapter adapter;
     public ArrayList<Telecast> telecasts = new ArrayList<>();
-    final String NUMBER = "number";
+    private final String NUMBER = "number",
+            TELECAST = "telecast";
     int number;
+    String telecast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_telecast);
 
+        Intent intent = getIntent();
+        number = intent.getIntExtra(NUMBER, 0);
+        telecast = intent.getStringExtra(TELECAST);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.tbMain);
+        toolbar.setTitle(telecast);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        Intent intent = getIntent();
-        number = intent.getIntExtra(NUMBER, 0);
 
         rvTel = (RecyclerView)findViewById(R.id.rvTel);
         rvTel.setHasFixedSize(true);

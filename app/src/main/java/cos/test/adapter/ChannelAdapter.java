@@ -22,7 +22,8 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ViewHold
 
     private Context context;
     private List<Channel> listChannels;
-    private final String NUMBER = "number";
+    private final String NUMBER = "number",
+        TELECAST = "telecast";
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -71,6 +72,7 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ViewHold
             public void onClick(View view, int position, boolean isLongClick) {
                 Intent intent = new Intent(context, TelecastActivity.class);
                 intent.putExtra(NUMBER, listChannels.get(position).getNumb());
+                intent.putExtra(TELECAST, listChannels.get(position).getName());
                 context.startActivity(intent);
             }
         });
